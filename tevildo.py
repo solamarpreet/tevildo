@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 from prompt_toolkit import PromptSession
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -45,8 +46,9 @@ class OpenAIPrompt:
             model_dict[i["id"]] = None
         return model_dict
 
-    def print_current_settings(self):
-            print(f"Current model: {self.current_model}\nCurrent Temperature: {self.current_temperature}\nCurrent prompt: {self.current_prompt}\n")
+    def list_setting(self, attribute: str):
+        """Return a specific setting attribute with a new value."""
+        return getattr(self, attribute)
 
     def openai_chat(self):
         collected_chunks = []
@@ -58,13 +60,16 @@ class OpenAIPrompt:
                 stream=True
             )
             for chunk in response:
-                print(chunk)
                 chunk_data = chunk.model_dump()["choices"][0]["delta"]["content"]
                 if chunk_data:
                     print(chunk_data, end="")
                     collected_chunks.append(chunk_data)
             self.message_db.append({"role": "assistant", "content": "".join(collected_chunks)})
             print("\n")
+
+        except KeyboardInterrupt:
+            print ("Request Interrupted.\n")
+            return
 
         except Exception as e:
             print(f"Error during OpenAI chat: {e}")
@@ -76,7 +81,7 @@ class OpenAIPrompt:
                 user_input = self.session.prompt("Tevildo> ", complete_in_thread=True)
                 if user_input in ['exit', 'quit', 'exit()', 'quit()', 'q']:
                     break
-                elif user_input in ['clear', 'clear messages', 'clear msg', 'clear msgs' 'new']:
+                elif user_input in ['clear', 'clear messages', 'clear msgs']:
                     self.update_setting('message_db', [{"role": "system", "content": self.current_prompt}])
                     continue
 
@@ -92,7 +97,7 @@ class OpenAIPrompt:
                     self.update_setting('current_temperature', os.getenv("DEFAULT_OPENAI_TEMPERATURE"))
                     print(f"Temperature is reset.\nCurrent temperature: {self.current_temperature}\n")
 
-                elif user_input in ['reset', 'restart', 'new session']:
+                elif user_input in ['reset', 'restart', 'reset all' 'clear all']:
                     self.update_setting('current_model', os.getenv("DEFAULT_OPENAI_MODEL"))
                     self.update_setting('current_prompt', os.getenv("DEFAULT_OPENAI_PROMPT"))
                     self.update_setting('current_temperature', os.getenv("DEFAULT_OPENAI_TEMPERATURE"))
@@ -121,8 +126,26 @@ class OpenAIPrompt:
                     print(f"Temperature changed to: {self.current_temperature}")
                     continue
 
-                elif user_input in ['show', 'list settings', 'show settings', 'show set', 'list set']:
-                    self.print_current_settings()
+                elif user_input.startswith('show model'):
+                    print(f'Current Model : {self.list_setting("current_model")}')
+                    continue
+
+                elif user_input.startswith('show prompt'):
+                    print(f'Current Prompt : {self.list_setting("current_prompt")}')
+                    continue
+
+                elif user_input.startswith('show temperature'):
+                    print(f'Current Temperature : {self.list_setting("current_temperature")}')
+                    continue
+
+                elif user_input.startswith('show messages'):
+                    print(f'Current Message DB : {self.list_setting("message_db")}')
+                    continue
+
+                elif user_input in ['show', 'list settings', 'show settings']:
+                    print(f'Current Model : {self.list_setting("current_model")}')
+                    print(f'Current Prompt : {self.list_setting("current_prompt")}')
+                    print(f'Current Temperature : {self.list_setting("current_temperature")}')
                     continue
 
                 self.message_db.append({"role": "user", "content": user_input})
@@ -136,7 +159,7 @@ class OpenAIPrompt:
 
 if __name__ == "__main__":
     try:
-        load_dotenv()
+        load_dotenv(Path("~/.tevildo").expanduser())
     except Exception as e:
         print(f"Error loading environment file: {e}")
         sys.exit(1)

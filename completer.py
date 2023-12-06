@@ -12,19 +12,30 @@ class OpenAISessionCompleter(Completer):
                     'temperature' : None,
                     },
 
-            'clear': {'model' : None,
-                      'prompt' : None,
-                      'temperature' : None,
+            'clear': {'all' : None,
                       'messages' : None,
-                    },
-                    
-            'reset': {'all' : None,
                       'model' : None,
                       'prompt' : None,
                       'temperature' : None,
                     },
-            'show': {'settings'},
-            'list': {'settings'},
+                    
+            'reset': {'all' : None,
+                      'messages' : None,
+                      'model' : None,
+                      'prompt' : None,
+                      'temperature' : None,
+                    },
+            'show': {'messages' : None,
+                      'model' : None,
+                      'prompt' : None,
+                      'temperature' : None,
+                      'settings' : None,
+                    },
+
+            'list': {'models' : None,
+                     'settings' : None,
+                     },
+                     
             'exit': None,
             'restart': None,
                             }

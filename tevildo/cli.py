@@ -4,7 +4,7 @@ from pathlib import Path
 from prompt_toolkit import PromptSession
 from openai import OpenAI
 from dotenv import load_dotenv
-from completer import OpenAISessionCompleter
+from .completer import OpenAISessionCompleter
 from prompt_toolkit.key_binding import KeyBindings
 
 
@@ -65,7 +65,6 @@ class OpenAIPrompt:
                     print(chunk_data, end="")
                     collected_chunks.append(chunk_data)
             self.message_db.append({"role": "assistant", "content": "".join(collected_chunks)})
-            print("\n")
 
         except KeyboardInterrupt:
             print ("Request Interrupted.\n")
@@ -77,10 +76,10 @@ class OpenAIPrompt:
     def cli(self):
         while True:
             try:
-
-                user_input = self.session.prompt("Tevildo> ", complete_in_thread=True)
+                user_input = self.session.prompt("\nTevildo> ", complete_in_thread=True)
                 if user_input in ['exit', 'quit', 'exit()', 'quit()', 'q']:
                     break
+                
                 elif user_input in ['clear', 'clear messages', 'clear msgs']:
                     self.update_setting('message_db', [{"role": "system", "content": self.current_prompt}])
                     continue
@@ -97,7 +96,7 @@ class OpenAIPrompt:
                     self.update_setting('current_temperature', os.getenv("DEFAULT_OPENAI_TEMPERATURE"))
                     print(f"Temperature is reset.\nCurrent temperature: {self.current_temperature}\n")
 
-                elif user_input in ['reset', 'restart', 'reset all' 'clear all']:
+                elif user_input in ['reset', 'restart', 'reset all', 'clear all']:
                     self.update_setting('current_model', os.getenv("DEFAULT_OPENAI_MODEL"))
                     self.update_setting('current_prompt', os.getenv("DEFAULT_OPENAI_PROMPT"))
                     self.update_setting('current_temperature', os.getenv("DEFAULT_OPENAI_TEMPERATURE"))
@@ -139,7 +138,9 @@ class OpenAIPrompt:
                     continue
 
                 elif user_input.startswith('show messages'):
-                    print(f'Current Message DB : {self.list_setting("message_db")}')
+                    print('Current Message DB :')
+                    for i in self.list_setting("message_db"):
+                        print(i)
                     continue
 
                 elif user_input in ['show', 'list settings', 'show settings']:
@@ -157,7 +158,7 @@ class OpenAIPrompt:
             except EOFError:
                 break
 
-if __name__ == "__main__":
+def main():
     try:
         load_dotenv(Path("~/.tevildo").expanduser())
     except Exception as e:
@@ -166,3 +167,6 @@ if __name__ == "__main__":
 
     app = OpenAIPrompt()
     app.cli()
+
+if __name__ == "__main__":
+    main()

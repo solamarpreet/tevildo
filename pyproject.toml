@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "tevildo"
-version = "0.0.3"
+version = "0.1.0"
 description = "A python based OpenAI bot for shell environments"
 authors = ["Amarpreet Singh <solamarpreet@gmail.com>"]
-license = "GPLv3"
+license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]

@@ -80,7 +80,7 @@ class OpenAIPrompt:
                 if user_input in ['exit', 'quit', 'exit()', 'quit()', 'q']:
                     break
                 
-                elif user_input in ['clear', 'clear messages', 'clear msgs']:
+                elif user_input in ['clear messages', 'clear msgs']:
                     self.update_setting('message_db', [{"role": "system", "content": self.current_prompt}])
                     continue
 
@@ -96,7 +96,7 @@ class OpenAIPrompt:
                     self.update_setting('current_temperature', os.getenv("DEFAULT_OPENAI_TEMPERATURE"))
                     print(f"Temperature is reset.\nCurrent temperature: {self.current_temperature}\n")
 
-                elif user_input in ['reset', 'restart', 'reset all', 'clear all']:
+                elif user_input in ['clear', 'reset', 'restart', 'reset all', 'clear all']:
                     self.update_setting('current_model', os.getenv("DEFAULT_OPENAI_MODEL"))
                     self.update_setting('current_prompt', os.getenv("DEFAULT_OPENAI_PROMPT"))
                     self.update_setting('current_temperature', os.getenv("DEFAULT_OPENAI_TEMPERATURE"))

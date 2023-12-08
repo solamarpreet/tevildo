@@ -37,7 +37,6 @@ class OpenAISessionCompleter(Completer):
                      },
                      
             'exit': None,
-            'restart': None,
                             }
         
         

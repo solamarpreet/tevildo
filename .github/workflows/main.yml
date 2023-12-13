@@ -24,6 +24,6 @@ jobs:
         PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
       run: |
         poetry config pypi-token.pypi "$PYPI_TOKEN"
-        poetry version $(date +'%Y.%m.%d')
+        poetry version $(date +'%Y.%m.%d.%H%M%S')
         poetry build
         poetry publish        

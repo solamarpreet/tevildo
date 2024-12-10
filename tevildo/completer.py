@@ -35,7 +35,10 @@ class OpenAISessionCompleter(Completer):
             'list': {'models' : None,
                      'settings' : None,
                      },
-                     
+
+            'enable': {'o1' : None,
+                       },
+
             'exit': None,
                             }
         

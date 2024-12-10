@@ -84,6 +84,10 @@ class OpenAIPrompt:
                     self.update_setting('message_db', [{"role": "system", "content": self.current_prompt}])
                     continue
 
+                elif user_input in ['enable o1']:
+                    self.update_setting('message_db', [])
+                    continue
+
                 elif user_input in ['clear model', 'reset model']:
                     self.update_setting('current_model', os.getenv("DEFAULT_OPENAI_MODEL"))
                     print(f"Model is reset.\nCurrent model: {self.current_model}\n")

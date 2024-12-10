@@ -18,6 +18,7 @@ class OpenAIPrompt:
         self.current_prompt = os.getenv("DEFAULT_OPENAI_PROMPT")
         self.current_model = os.getenv("DEFAULT_OPENAI_MODEL")
         self.current_temperature = os.getenv("DEFAULT_OPENAI_TEMPERATURE")
+        self.multiline = os.getenv('MULTILINE', 'False').lower() in ('true', '1', 'yes')
         self.message_db = [
             {"role": "system", "content": self.current_prompt},
         ]
@@ -76,7 +77,7 @@ class OpenAIPrompt:
     def cli(self):
         while True:
             try:
-                user_input = self.session.prompt("\nTevildo> ", complete_in_thread=True)
+                user_input = self.session.prompt("\nTevildo> ", complete_in_thread=True, multiline=self.multiline)
                 if user_input in ['exit', 'quit', 'exit()', 'quit()', 'q']:
                     break
                 
@@ -86,6 +87,8 @@ class OpenAIPrompt:
 
                 elif user_input in ['enable o1']:
                     self.update_setting('message_db', [])
+                    self.update_setting('current_temperature', "1")
+                    print(f"o1 mode is now enabled.\nCurrent model: {self.current_model}\nCurrent Temperature: {self.current_temperature}\n\n")
                     continue
 
                 elif user_input in ['clear model', 'reset model']:
